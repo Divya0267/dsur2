@@ -1,0 +1,21 @@
+require(MASS)
+require(foreign)
+
+data <- read.csv("C:/Users/admin/Downloads/Admission_Predict.csv")
+
+summary(data)
+
+# Fix column names if they have dots (common in CSVs)
+colnames(data) <- gsub("\\.", "_", colnames(data))
+
+# Create binary Admission variable
+data$Admission <- ifelse(data$Chance_of_Admit >= 0.75, 1, 0)
+
+# Logistic Regression model
+model <- glm(Admission ~ GRE_Score + CGPA, data = data, family = binomial)
+
+summary(model)
+
+# Calculate Pseudo R-squared
+pseudo_r2 <- 1 - (model$deviance / model$null.deviance)
+cat("Pseudo R-squared:", round(pseudo_r2, 4), "\n")
